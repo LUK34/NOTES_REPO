@@ -19,4 +19,9 @@
 - 3.1 https://github.com/LUK34/dca-prep-guide/tree/master
 
 
+### 4. Kubernetes Setup (Ashok IT)
+- Ashok IT EKS Cluster video: https://youtu.be/is99tq4Zwsc?si=0h53-S7WFtDNwAMh
+- Ashok IT Devops Notes: https://github.com/LUK34/DevOps-Documents/blob/main/05-EKS-Setup.md
+
+
 
