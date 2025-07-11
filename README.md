@@ -1,4 +1,7 @@
 
+### Links:
+- https://www.theexamvault.com/
+
 
 ### 1. For exam prep. Youtube Channel Links:.
 - TheExamault Youtube: https://www.youtube.com/@TheExamVault
@@ -7,7 +10,7 @@
 - 2.1 Start with Ashok it sirs note. If you are having difficulty to follow up with notes. Either enroll in his `Devops with Multi Cloud` course or watch his terraform youtube videos.
 - 2.2 Unfortunately Ashok it sirs notes + videos is not enough but its prerequisite to understanding terraform which is extremley necessary to pass this exam.
 - 2.3 Study Guide: HashiCorp Certified: Terraform Associate - Hands-On Labs  by Bryan Krausen • 180,000+ Enrollments Worldwide
-- 2.4 Refer Steo 2.3. He goes in detail with the certifcation process. But make sure to first refer Ashok it lecture and then only jump to Krausens course. Some topics are hard to follow and not up to date.(E.g: Provisioners)
+- 2.4 Refer Step 2.3. He goes in detail with the certifcation process. But make sure to first refer Ashok it lecture and then only jump to Krausens course. Some topics are hard to follow and not up to date.(E.g: Provisioners)
 - 2.5 Question bank refer: https://www.youtube.com/@TheExamVault
 - 2.6 Refer Cloud champ udemy exam dump course. Highly usefull
 
