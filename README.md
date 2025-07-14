@@ -21,7 +21,12 @@
 
 ### 4. Kubernetes Setup (Ashok IT)
 - Ashok IT EKS Cluster video: https://youtu.be/is99tq4Zwsc?si=0h53-S7WFtDNwAMh
-- Ashok IT Devops Notes: https://github.com/LUK34/DevOps-Documents/blob/main/05-EKS-Setup.md
+- Ashok IT Devops Notes: https://github.com/LUK34/DevOps-Documents/blob/main/05-EKS-Setup.md\
+
+
+### 5. KCNA notes
+https://medium.com/@wattsdave/kubernetes-cloud-native-associate-kcna-study-notes-75a442eb4e8a
+https://notes.kaiwalyakoparkar.com/kcna/cloud-native-application-delivery/gitops-cicd
 
 
 
