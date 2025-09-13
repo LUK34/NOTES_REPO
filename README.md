@@ -1,4 +1,6 @@
 
+
+
 ### Links:
 - https://www.theexamvault.com/
 
@@ -28,5 +30,6 @@
 https://medium.com/@wattsdave/kubernetes-cloud-native-associate-kcna-study-notes-75a442eb4e8a
 https://notes.kaiwalyakoparkar.com/kcna/cloud-native-application-delivery/gitops-cicd
 
-
+- KodeKloud KCNA Notes
+https://notes.kodekloud.com/docs/Kubernetes-and-Cloud-Native-Associate-KCNA/Kubernetes-Fundamentals/Docker-vs-ContainerD
 
