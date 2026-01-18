@@ -30,6 +30,16 @@
 https://medium.com/@wattsdave/kubernetes-cloud-native-associate-kcna-study-notes-75a442eb4e8a
 https://notes.kaiwalyakoparkar.com/kcna/cloud-native-application-delivery/gitops-cicd
 
-- KodeKloud KCNA Notes
+
+
+### 6. KodeKloud -> KCNA Notes
 https://notes.kodekloud.com/docs/Kubernetes-and-Cloud-Native-Associate-KCNA/Kubernetes-Fundamentals/Docker-vs-ContainerD
+
+
+### 7. KodeKloud -> Certified Jenkings Engineer notes
+https://notes.kodekloud.com/docs/Certified-Jenkins-Engineer/Introduction-and-Basics/Introduction-to-Jenkins
+
+
+
+
 
