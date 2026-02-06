@@ -1,4 +1,13 @@
 
+```
+git lfs track "*.rar"
+git add .gitattributes
+git commit -m "Track .rar files using Git LFS"
+git add "ORACLE AFTER MIGRATION QUERIES + SETUP.rar"
+git commit -m "Add Oracle migration setup using Git LFS"
+git push
+```
+
 
 
 ### Links:
