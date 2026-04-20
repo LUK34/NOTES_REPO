@@ -1,0 +1,901 @@
+Video 8:
+```
+ssh root@10.201.49.174
+ls --help
+journalctl --help
+```
+
+for --help. There will be a "pager" to scroll up/down the content either you can use `pgup` or `pgdwn`. to exit execute
+```
+q
+```
+
+Every command has its own manual.
+
+```
+man journalctl
+man ls
+man man
+man 1 printf
+man 2 printf
+```
+
+The apropos command in Linux is used to search the manual page names and descriptions for a keyword.
+Difference Between man and apropos
+Command	Purpose
+```
+man ls	-> Shows manual of specific command
+apropos list -> Searches for commands related to "list"
+```
+
+--------------------------------------------------------------------------
+Let’s break this down clearly 👇
+
+apropos -s 1,8 director
+🔎 1️⃣ apropos
+
+Searches the manual page database for a keyword.
+
+🔧 2️⃣ -s 1,8
+
+This option restricts the search to specific man page sections.
+
+Man pages are divided into sections:
+
+Section	Meaning
+1	User commands (normal shell commands like ls, cp, mkdir)
+8	System administration commands (root/admin commands like mount, useradd)
+
+So:
+
+-s 1,8
+
+means:
+
+Search only in section 1 and section 8 man pages.
+
+This avoids matches from libraries, config files, kernel docs, etc.
+
+📂 3️⃣ director
+
+This is the search keyword.
+
+So the full command means:
+
+Search for man pages related to "director", but only in user commands (1) and system admin commands (8).
+
+🧠 Why use -s 1,8?
+
+Without it:
+
+apropos director
+
+You might get:
+
+library functions
+
+programming APIs
+
+config file formats
+
+developer docs
+
+With -s 1,8, you limit results to actual executable commands — useful in:
+
+RHCE
+
+DevOps work
+
+System troubleshooting
+--------------------------------------------------------------------------
+-v (lowercase v)
+Most commonly means:
+verbose mode (show more detailed output)
+
+-V (uppercase V)
+Most commonly means:
+Version information
+
+
+---------------------------------------------------------------------------
+When you run:
+
+apropos ssh
+
+and get:
+
+ssh: nothing appropriate.
+
+It means:
+
+The man page database (whatis database) is missing or not built.
+
+apropos does NOT read man pages directly.
+It searches a prebuilt index database.
+
+If that database is empty → you get that error.
+
+
+e.g of one command that i executed:
+echo nfsmount.conf > /home/bob/nfsmount
+---------------------------------------------------------------------------
+
+- Copying files from source to destination
+cp [source] [dest]
+
+- Copying folder from source to destination
+cp -r [source] [dest]
+
+- copy all the contents from Recipts folder into BackupOfReceipts folder
+cp -r Receipts/ BackupOfReceipts/
+
+
+- Move a file to another folder
+mv Receipt.pdf Receipts/
+
+- To rename a file 
+mv Receipt.pdf OldReceipt.pdf
+
+---------------------------------------------------------------------------
+- Hard Links and soft links:
+
+-- HARD LINK:
+Excellent 🔥 This is a very important Linux concept — especially for LFCS/RHCSA.
+
+Let’s go step by step, very simple.
+
+🧠 1️⃣ What is an Inode?
+
+Think of a file as having two parts:
+
+Filename  →  Inode  →  Actual Data
+📌 Inode contains:
+
+Permissions
+
+Owner (UID/GID)
+
+File size
+
+Timestamps
+
+Link count
+
+Pointer to actual data blocks
+
+⚠️ Important:
+The inode does NOT store the filename.
+
+The filename is just a label pointing to the inode.
+
+📊 Example From Your Screenshot
+Inode: 52946177
+Links: 1
+
+This means:
+
+family_dog.jpg points to inode 52946177
+
+That inode points to the file data
+
+Link count = 1 (only one filename refers to it)
+
+🔗 2️⃣ What is a Hard Link?
+
+A hard link is simply:
+
+Another filename pointing to the SAME inode.
+
+🎯 Example
+
+Create a file:
+
+echo "Hello" > file1
+
+Check inode:
+
+ls -li file1
+
+Output:
+
+52946177 file1
+
+Now create a hard link:
+
+ln file1 file2
+
+Check again:
+
+ls -li
+
+You will see:
+
+52946177 file1
+52946177 file2
+
+Same inode number!
+
+🔥 What Just Happened?
+
+Now:
+
+file1  \
+         → Inode 52946177 → Data
+file2  /
+
+Both names point to the SAME inode.
+
+🧮 Link Count
+
+If you run:
+
+stat file1
+
+You’ll see:
+
+Links: 2
+
+Because two filenames point to the same inode.
+
+💣 What Happens If You Delete One?
+rm file1
+
+The file still exists!
+
+Because file2 still points to the inode.
+
+The data is removed only when:
+
+Link count = 0
+🚫 Limitations of Hard Links
+
+This is VERY important for exams.
+
+❌ 1. Cannot link directories
+
+You cannot do:
+
+ln dir1 dir2
+
+Linux blocks this to prevent directory loops.
+
+❌ 2. Cannot cross file systems
+
+You cannot create hard links across different disks/partitions.
+
+Example:
+
+/home  (inode table A)
+/var   (inode table B)
+
+Hard links must exist within the SAME filesystem.
+
+❌ 3. Hard links only work for regular files
+
+Not for:
+
+Directories
+
+Different mounted partitions
+
+🆚 Hard Link vs Soft Link (Quick Comparison)
+Feature	Hard Link	Soft Link
+Points to	Inode	Filename path
+Same inode?	Yes	No
+Cross filesystem?	No	Yes
+Works if original deleted?	Yes	No
+Can link directories?	No	Yes (mostly)
+🧠 Simple Real-Life Analogy
+
+Imagine:
+
+Inode = Locker
+
+Filename = Label on locker
+
+Data = Items inside locker
+
+Hard link = Another label stuck on the SAME locker.
+
+Removing one label doesn’t remove the locker.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--SOFT LINK:
+
+what are soft links
+
+Good 🔥 now we complete the picture.
+
+You understood hard links.
+Now let’s understand soft links (symbolic links) very clearly.
+
+🔗 What Is a Soft Link?
+
+A soft link (symbolic link) is:
+
+A special file that points to another file by its path name.
+
+It does NOT share the inode.
+
+🧠 Simple Structure
+
+Hard link:
+
+file1  →  inode 1234  → data
+file2  →  inode 1234  → data
+
+Soft link:
+
+file1  → inode 1234 → data
+link1  → (contains path "file1")
+
+The soft link just stores:
+
+"file1"
+
+It does NOT point to the inode directly.
+
+🛠 How To Create a Soft Link
+ln -s original_file link_name
+
+Example:
+
+echo "Hello" > file1
+ln -s file1 link1
+🔎 Check It
+ls -li
+
+You’ll see something like:
+
+52946177 file1
+52946190 link1 -> file1
+
+Notice:
+
+Different inode numbers
+
+link1 shows -> file1
+
+🚨 What Happens If Original Is Deleted?
+rm file1
+
+Now:
+
+cat link1
+
+❌ Error: No such file
+
+Because the soft link only stores the path.
+The target file is gone.
+
+This is called a:
+
+Broken (dangling) symbolic link
+
+📦 Where Soft Links Are Useful
+
+Very common in Linux:
+
+Examples:
+
+/usr/bin/python → /usr/bin/python3
+/lib64 → /usr/lib64
+
+Used for:
+
+Version management
+
+Shortcuts
+
+Redirecting paths
+
+System upgrades
+
+🆚 Hard Link vs Soft Link
+Feature	Hard Link	Soft Link
+Points to	Inode	Path
+Same inode?	Yes	No
+Cross filesystem?	❌ No	✅ Yes
+Link directories?	❌ No	✅ Yes
+Works if original deleted?	✅ Yes	❌ No
+Inode count increases?	✅ Yes	❌ No
+🧠 Simple Analogy
+
+Hard link = Two names on the same locker
+Soft link = A paper note saying “Go to locker A”
+
+If locker A is destroyed:
+
+Hard link still works
+
+Soft link becomes useless
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+📌 1️⃣ ls -l Command
+
+ls -l shows detailed file information.
+
+Example output:
+
+-rw-r-----. 1 aaron family 49 Oct 27 14:41 family_dog.jpg
+
+The important parts:
+
+aaron → Owner
+
+family → Group
+
+49 → File size
+
+family_dog.jpg → File name
+
+👉 So initially:
+
+Owner = aaron
+
+Group = family
+
+📌 2️⃣ chgrp → Change Group
+
+Command:
+
+chgrp sudo family_dog.jpg
+
+chgrp means change group
+
+It changes only the group ownership
+
+After running:
+
+-rw-r-----. 1 aaron sudo 49 Oct 27 14:41 family_dog.jpg
+
+👉 Now:
+
+Owner = aaron
+
+Group = sudo
+
+📌 3️⃣ groups Command
+
+Command:
+
+groups
+
+Output:
+
+aaron sudo family
+
+Shows which groups the user belongs to.
+
+User aaron belongs to:
+
+sudo
+
+family
+
+📌 4️⃣ chown → Change Owner
+
+Command:
+
+sudo chown jane family_dog.jpg
+
+chown means change owner
+
+After running:
+
+-rw-r-----. 1 jane family 49 Oct 27 14:41 family_dog.jpg
+
+👉 Now:
+
+Owner = jane
+
+Group = family
+
+📌 5️⃣ Change Owner AND Group Together
+
+Command:
+
+sudo chown aaron:family family_dog.jpg
+
+Format:
+
+chown owner:group file
+
+Changes both owner and group at the same time.
+
+Final result:
+
+-rw-r-----. 1 aaron family 49 Oct 27 14:41 family_dog.jpg
+
+👉 Now:
+
+Owner = aaron
+
+Group = family
+
+🎯 Summary (Very Important)
+Command	What It Changes
+chgrp	Only Group
+chown user	Only Owner
+chown user:group	Owner and Group
+groups	Shows user’s groups
+ls -l	Shows file owner & group
+
+
+Refer the images folder:UGO
+------------------------------------------------------------------------------------------------------------------------------------------------------
+ SUID, SGID 
+ 
+ 🔴 1️⃣ SUID (Set User ID)
+📌 What is SUID?
+
+A special permission for files (executables).
+
+When a user runs the file, it runs with the owner’s permissions, not the user’s.
+
+📌 Simple Example from Image
+
+Emily and John run a file called filereports.
+
+The file is owned by someone else.
+
+Because SUID is set:
+👉 The file runs with the file owner’s privileges.
+
+📌 Why is this useful?
+
+Example:
+
+/usr/bin/passwd
+
+Normal user can change password.
+
+But password file is owned by root.
+
+So passwd runs with root privileges using SUID.
+
+📌 How to Set SUID
+chmod 4664 suidfile
+
+OR
+
+chmod u+s suidfile
+📌 How It Looks in ls -l
+-rwsrw-r-- suidfile
+
+Notice:
+👉 s replaces x in user section
+
+If you see:
+
+-rws------
+
+That means SUID is active.
+
+📌 Find SUID Files
+find . -perm /4000
+
+4000 = SUID
+
+🟡 2️⃣ SGID (Set Group ID)
+📌 What is SGID?
+
+Works on files and directories
+
+Makes file run with group’s permissions
+
+📌 For Files
+
+If SGID is set on a file:
+
+It runs with group privileges
+
+📌 For Directories (Very Important!)
+
+If SGID is set on a directory:
+
+All new files inside that directory inherit the same group
+
+Very useful for:
+
+Shared project folders
+
+📌 How to Set SGID
+chmod 2664 sgidfile
+
+OR
+
+chmod g+s sgidfile
+📌 How It Looks in ls -l
+-rw-rwsr--
+
+Notice:
+👉 s appears in the group section
+
+📌 Find SGID Files
+find . -perm /2000
+
+2000 = SGID
+
+🔵 3️⃣ Sticky Bit
+📌 What is Sticky Bit?
+
+Used only on directories
+
+Restricts file deletion inside that directory
+
+📌 What It Does
+
+If sticky bit is set:
+Even if users have write permission:
+❌ They cannot delete other user’s files.
+
+Only:
+
+File owner
+
+Directory owner
+
+root
+
+Can delete files.
+
+📌 Real Life Example
+
+/tmp directory in Linux
+
+Everyone can create files.
+But users cannot delete others’ files.
+
+📌 How to Set Sticky Bit
+chmod 1777 stickydir
+
+OR
+
+chmod +t stickydir
+📌 How It Looks in ls -ld
+drwxrwxrwt stickydir
+
+Notice:
+👉 t at the end (others section)
+
+If capital T
+→ execute permission not set.
+
+🟣 4️⃣ Setting Both SUID + SGID
+
+From image:
+
+chmod 6664 both
+
+6 (special bits) means:
+
+4 → SUID
+
+2 → SGID
+
+Total = 6
+
+📌 Find Both
+find . -perm /6000
+
+6000 = SUID + SGID
+
+🧠 Easy Memory Trick
+Permission	Number	Applies To	Shows As
+SUID	4000	File	s in user
+SGID	2000	File/Dir	s in group
+Sticky	1000	Directory	t in others
+🧩 Very Simple Analogy
+
+Think of a company:
+
+👤 SUID → You temporarily become the boss
+
+👥 SGID → You temporarily use the team’s power
+
+🔒 Sticky → You cannot delete someone else's desk items
+-------------------------------------------------------------------------------------------------------------------------------------------------
+find Command – Basics
+General Syntax
+find [path] [search_parameters]
+Examples
+
+Search inside /bin:
+
+find /bin/ -name file1.txt
+
+Search in current directory (no path given):
+
+find -name file1.txt
+
+❌ Wrong order:
+
+find -name file1.txt /bin/
+
+(Path should come before search parameters.)
+
+3️⃣ Search by Name
+Case-sensitive
+find -name felix
+Case-insensitive
+find -iname felix
+Wildcards
+find -name "f*"
+
+Matches:
+
+felix
+
+freya
+
+fin
+
+4️⃣ Search by File Type Examples
+Find JPG files
+find /usr/share/ -name "*.jpg"
+Find files larger than 10MB
+find /lib64/ -size +10M
+Find files modified in last 1 minute
+find /dev/ -mmin -1
+5️⃣ Search by Modified Time
+Modified Minutes
+find -mmin [minute]
+Command	Meaning
+-mmin 5	Modified exactly 5 minutes ago
+-mmin -5	Modified within last 5 minutes
+-mmin +5	Modified more than 5 minutes ago
+Modified Days (24-hour periods)
+find -mtime 2
+
+Modified 2 days ago.
+
+⚠️ Modified time = file content change
+It is NOT the same as change time (metadata change).
+
+6️⃣ Search by File Size
+Syntax
+find -size [size]
+Examples
+find -size 512k
+
+Exactly 512 KB
+
+find -size +512k
+
+Greater than 512 KB
+
+Size Units
+Symbol	Meaning
+c	bytes
+k	kilobytes
+M	megabytes
+G	gigabytes
+7️⃣ Combining Search Expressions
+AND Operator (Default behavior)
+find -name "f*" -size 512k
+
+Files:
+
+Starting with "f"
+
+AND size = 512 KB
+
+OR Operator
+find -name "f*" -o -size 512k
+
+Files:
+
+Name starts with "f"
+
+OR size = 512 KB
+
+NOT Operator
+
+Method 1:
+
+find -not -name "f*"
+
+Method 2 (Escape):
+
+find \! -name "f*"
+8️⃣ Search by Permissions
+
+Permissions: 664
+
+Meaning:
+
+u = rw
+g = rw
+o = r
+Exact Permission
+find -perm 664
+
+At Least These Permissions
+find -perm -664
+
+Any of These Permissions
+find -perm /664
+
+Symbolic Format
+find -perm u=rw,g=rw,o=r
+
+🔥 Quick Summary Table
+
+Search Type	Command
+
+By name	-name
+Case-insensitive	-iname
+By size	-size
+By modified minutes	-mmin
+By modified days	-mtime
+By permission	-perm
+AND	default
+OR	-o
+NOT	-not or \!
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+Excercise answers:
+```
+find /var/log -perm -g=w ! -perm -o=rw > /home/bob/data.txt
+```
+
+```
+find /home/bob -size 213k > /home/bob/secfile.txt
+```
+
+```
+chmod u+s,g+s,o+t /home/bob/datadir
+```
+
+```
+sudo find /usr/share -name dogs.txt > /home/bob/dogs
+```
+
+```
+sudo find /var/ -type d -name pets > /home/bob/pets.txt
+```
+
+```
+sudo find /var -type f -perm 0777 -print
+```
+
+```
+sudo find /usr/ -type f -perm 0640 > /home/bob/.opt/permissions.txt
+```
+
+```
+sudo find /usr/ -type f -mmin -120
+```
+
+```
+sudo find /var/ -type f -mmin -30
+```
+
+```
+sudo find /var/ -type f -size 20M
+```
+
+```
+sudo find /usr/ -type f -size +5M -size -10M > /home/bob/size.txt
+```
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+ 
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+ 
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+  
+
+
+
+###################################################################################################################################################
+
+
+
+
+
